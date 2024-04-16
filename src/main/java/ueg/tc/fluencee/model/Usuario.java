@@ -15,9 +15,9 @@ import java.util.Collection;
 @Table(name="TBL_USUARIO")
 public class Usuario implements UserDetails {
     @Id
-    @SequenceGenerator(name = "musica_sequence", sequenceName = "musica_sequence", allocationSize = 1)
+    @SequenceGenerator(name = "usuario_sequence", sequenceName = "usuario_sequence", allocationSize = 1)
     @Column(name = "id_usuario", nullable = false)
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "musica_sequence")
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "usuario_sequence")
     private Long id;
 
     // NOME do usuário
@@ -31,13 +31,6 @@ public class Usuario implements UserDetails {
     // SENHA do usuário
     @Column(name = "c_senha", length = 256, nullable = false)
     private String senha;
-
-    // Antes de salvar no banco de dados codifica a senha (encriptação).
-    @PrePersist
-    private void hashPassword() {
-        BCryptPasswordEncoder bCryptPasswordEncoder = new BCryptPasswordEncoder();
-        setSenha(bCryptPasswordEncoder.encode(this.senha));
-    }
 
     @Column(name = "c_ativado", nullable = false)
     private Boolean ativado;
@@ -60,17 +53,17 @@ public class Usuario implements UserDetails {
 
     @Override
     public boolean isAccountNonExpired() {
-        return UserDetails.super.isAccountNonExpired();
+        return true;
     }
 
     @Override
     public boolean isAccountNonLocked() {
-        return UserDetails.super.isAccountNonLocked();
+        return true;
     }
 
     @Override
     public boolean isCredentialsNonExpired() {
-        return UserDetails.super.isCredentialsNonExpired();
+        return true;
     }
 
     @Override

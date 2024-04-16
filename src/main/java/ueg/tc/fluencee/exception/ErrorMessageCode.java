@@ -21,7 +21,10 @@ public enum ErrorMessageCode {
 
 
     // LOGIN
-    EMAIL_NAO_ENCONTRADO(HttpStatus.BAD_REQUEST, "O email não foi encontrado. Tente criar uma conta se você ainda não tem uma!");
+    EMAIL_NAO_ENCONTRADO(HttpStatus.BAD_REQUEST, "O email não foi encontrado. Tente criar uma conta se você ainda não tem uma!"),
+    ERRO_GERAR_TOKEN(HttpStatus.UNAUTHORIZED, "Erro ao gerar token para login!"),
+    ERRO_VALIDAR_TOKEN(HttpStatus.UNAUTHORIZED, "Erro ao validar token para login!"),
+    ERRO_RECUPERAR_USUARIO_LOGIN(HttpStatus.UNAUTHORIZED, "Erro ao recuperar usuário pelo login!");
 
     final HttpStatus status;
     final String message;

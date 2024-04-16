@@ -4,6 +4,7 @@ import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
+import ueg.tc.fluencee.configuration.security.TokenService;
 import ueg.tc.fluencee.dto.AlterarSenhaDTO;
 import ueg.tc.fluencee.dto.UsuarioRequestDTO;
 import ueg.tc.fluencee.dto.UsuarioResponseDTO;
@@ -16,14 +17,19 @@ import ueg.tc.fluencee.validations.usuario.ValidateSenhaUsuario;
 import ueg.tc.fluencee.validations.usuario.ValidateUsuarioBeforeSave;
 
 import java.util.List;
-import java.util.Optional;
 
 
 @Service
 public class UsuarioService {
+
     @Autowired
     private UsuarioRepository usuarioRepository;
+
+    @Autowired
+    private TokenService tokenService;
+
     private final ModelMapper mapper = new ModelMapper();
+
     @Autowired
     private List<ValidateUsuarioBeforeSave> validateUsuarioBeforeSave;
 
@@ -42,14 +48,16 @@ public class UsuarioService {
         // Inicialização de Usuário
         Usuario usuario = mapper.map(usuarioRequestDTO, Usuario.class);
         usuario.setAtivado(Boolean.TRUE);
+
+        usuario.setSenha(new BCryptPasswordEncoder().encode(usuarioRequestDTO.getSenha()));
         usuario = usuarioRepository.save(usuario);
 
         return mapper.map(usuario, UsuarioResponseDTO.class);
     }
 
-    public UsuarioResponseDTO getUsuarioById(Long id){
+    public UsuarioResponseDTO getUsuarioById(){
         UsuarioResponseDTO usuarioResponseDTO;
-        usuarioResponseDTO = mapper.map(usuarioRepository.getReferenceById(id), UsuarioResponseDTO.class);
+        usuarioResponseDTO = mapper.map(tokenService.getUsuarioLogado(), UsuarioResponseDTO.class);
 
         if(usuarioResponseDTO.getAtivado() == Boolean.FALSE){
             throw new BusinessException(ErrorMessageCode.USUARIO_INATIVADO);
@@ -62,8 +70,8 @@ public class UsuarioService {
         return usuarioResponseDTO;
     }
 
-    public UsuarioResponseDTO alterarNome(Long id, UsuarioRequestDTO usuarioRequestDTO){
-        Usuario usuarioBD = usuarioRepository.getReferenceById(id);
+    public UsuarioResponseDTO alterarNome(UsuarioRequestDTO usuarioRequestDTO){
+        Usuario usuarioBD = tokenService.getUsuarioLogado();
 
         if(usuarioBD.getAtivado() == Boolean.FALSE){
             throw new BusinessException(ErrorMessageCode.USUARIO_INATIVADO);
@@ -76,8 +84,8 @@ public class UsuarioService {
         return mapper.map(usuarioBD, UsuarioResponseDTO.class);
     }
 
-    public UsuarioResponseDTO trocarSenha(Long id, AlterarSenhaDTO alterarSenhaDTO){
-        Usuario usuarioBD = usuarioRepository.getReferenceById(id);
+    public UsuarioResponseDTO trocarSenha(AlterarSenhaDTO alterarSenhaDTO){
+        Usuario usuarioBD = tokenService.getUsuarioLogado();
 
         if(usuarioBD.getAtivado() == Boolean.FALSE){
             throw new BusinessException(ErrorMessageCode.USUARIO_INATIVADO);
@@ -85,25 +93,22 @@ public class UsuarioService {
 
         BCryptPasswordEncoder bCryptPasswordEncoder = new BCryptPasswordEncoder();
 
-        if (!alterarSenhaDTO.getEmail().equals(usuarioBD.getEmail())){
-            throw new BusinessException(ErrorMessageCode.EMAIL_ERRADO);
-        } else if(!bCryptPasswordEncoder.matches(alterarSenhaDTO.getSenhaAntiga(), usuarioBD.getSenha())) { // TODO arrumar senha SHA-256
+        if(!bCryptPasswordEncoder.matches(alterarSenhaDTO.getSenhaAntiga(), usuarioBD.getSenha())) {
             throw new BusinessException(ErrorMessageCode.SENHA_ERRADA);
         }
 
         ValidateSenhaUsuario.validarSenha(alterarSenhaDTO.getSenhaNova());
-        String novaSenha = bCryptPasswordEncoder.encode(alterarSenhaDTO.getSenhaNova()); // TODO arrumar senha SHA-256
+        String novaSenha = bCryptPasswordEncoder.encode(alterarSenhaDTO.getSenhaNova());
         usuarioBD.setSenha(novaSenha);
         usuarioRepository.save(usuarioBD);
 
         return mapper.map(usuarioBD, UsuarioResponseDTO.class);
     }
 
-    public UsuarioResponseDTO desativar(Long id){
-        Optional<Usuario> usuarioBD = usuarioRepository.findById(id);
+    public UsuarioResponseDTO desativar(){
+        Usuario usuario = tokenService.getUsuarioLogado();
 
-        if (usuarioBD.isPresent()){
-            Usuario usuario = usuarioBD.get();
+        if (usuario != null){
             if(usuario.getAtivado() == Boolean.FALSE){
                 throw new BusinessException(ErrorMessageCode.USUARIO_INATIVADO);
             } else {
@@ -112,6 +117,6 @@ public class UsuarioService {
             }
         } else throw new BusinessException(ErrorMessageCode.USUARIO_NAO_ENCONTRADO);
 
-        return mapper.map(usuarioBD, UsuarioResponseDTO.class);
+        return mapper.map(usuario, UsuarioResponseDTO.class);
     }
 }

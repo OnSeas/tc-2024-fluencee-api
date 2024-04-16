@@ -7,8 +7,6 @@ import lombok.Setter;
 @Setter
 public class AlterarSenhaDTO {
 
-    private String email;
-
     private String senhaAntiga;
 
     private String senhaNova;

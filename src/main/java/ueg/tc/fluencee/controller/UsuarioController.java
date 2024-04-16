@@ -14,33 +14,28 @@ public class UsuarioController {
     @Autowired
     private UsuarioService usuarioService;
 
-    @GetMapping(path = "{idUsuario}")
-    public ResponseEntity<UsuarioResponseDTO> getUsuario(@PathVariable("idUsuario") Long id){
-        return ResponseEntity.ok(usuarioService.getUsuarioById(id));
+    @GetMapping
+    public ResponseEntity<UsuarioResponseDTO> getUsuario(){
+        return ResponseEntity.ok(usuarioService.getUsuarioById());
     }
-
-//    @GetMapping(path = "")
-//    public ResponseEntity<List<UsuarioResponseDTO>> listarTudo(){
-//        return ResponseEntity.ok(usuarioService.listarTudo());
-//    }
 
     @PostMapping
     public ResponseEntity<UsuarioResponseDTO> incluir(@RequestBody UsuarioRequestDTO usuarioRequestDTO) {
         return ResponseEntity.ok(usuarioService.inserir(usuarioRequestDTO));
     }
 
-    @PutMapping(path = "{idUsuario}")
-    public ResponseEntity<UsuarioResponseDTO> alterar(@PathVariable("idUsuario") Long id, @RequestBody UsuarioRequestDTO usuarioRequestDTO){
-        return ResponseEntity.ok(usuarioService.alterarNome(id, usuarioRequestDTO));
+    @PutMapping("/alterarNome")
+    public ResponseEntity<UsuarioResponseDTO> alterar(@RequestBody UsuarioRequestDTO usuarioRequestDTO){
+        return ResponseEntity.ok(usuarioService.alterarNome(usuarioRequestDTO));
     }
 
-    @PutMapping(path = "/trocarsenha/{idUsuario}")
-    public ResponseEntity<UsuarioResponseDTO> trocarSenha(@PathVariable("idUsuario") Long id, @RequestBody AlterarSenhaDTO alterarSenhaDTO){
-        return ResponseEntity.ok(usuarioService.trocarSenha(id, alterarSenhaDTO));
+    @PutMapping(path = "/trocarSenha")
+    public ResponseEntity<UsuarioResponseDTO> trocarSenha(@RequestBody AlterarSenhaDTO alterarSenhaDTO){
+        return ResponseEntity.ok(usuarioService.trocarSenha(alterarSenhaDTO));
     }
 
-    @PutMapping(path = "desativar/{idUsuario}")
-    public ResponseEntity<UsuarioResponseDTO> desativar(@PathVariable("idUsuario") Long id){
-        return ResponseEntity.ok(usuarioService.desativar(id));
+    @PutMapping(path = "/desativar")
+    public ResponseEntity<UsuarioResponseDTO> desativar(){
+        return ResponseEntity.ok(usuarioService.desativar());
     }
 }
