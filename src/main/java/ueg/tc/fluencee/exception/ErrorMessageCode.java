@@ -6,8 +6,11 @@ import org.springframework.http.HttpStatus;
 @Getter
 public enum ErrorMessageCode {
 
-    // CADASTRO DE USUÁRIO
     CAMPO_OBRIGATORIO_VAZIO(HttpStatus.BAD_REQUEST, "É necessário preencher todos os campos obrigatórios!"),
+    CAMPOS_ERRADOS(HttpStatus.BAD_REQUEST,"Campos não preenchidos corretamente, por favor confira suas informações!"),
+    PERMISSAO_NEGADA(HttpStatus.UNAUTHORIZED, "VocÊ não tem permissão para realizar essa ação!"),
+
+    // CADASTRO DE USUÁRIO
     USUARIO_NOME_INVALIDO(HttpStatus.BAD_REQUEST, "Nome deve ter entre 3 e 200 caracteres!"),
     EMAIL_REPETIDO(HttpStatus.BAD_REQUEST, "Este email já está cadastrado! Tente outro email se quiser prosseguir com o cadastro."),
     COMPRIMENTO_EMAIL_INVALIDO(HttpStatus.BAD_REQUEST,"O email deve ter no máximo 256 caracteres!"),
@@ -24,7 +27,14 @@ public enum ErrorMessageCode {
     EMAIL_NAO_ENCONTRADO(HttpStatus.BAD_REQUEST, "O email não foi encontrado. Tente criar uma conta se você ainda não tem uma!"),
     ERRO_GERAR_TOKEN(HttpStatus.UNAUTHORIZED, "Erro ao gerar token para login!"),
     ERRO_VALIDAR_TOKEN(HttpStatus.UNAUTHORIZED, "Erro ao validar token para login!"),
-    ERRO_RECUPERAR_USUARIO_LOGIN(HttpStatus.UNAUTHORIZED, "Erro ao recuperar usuário pelo login!");
+    ERRO_RECUPERAR_USUARIO_LOGIN(HttpStatus.UNAUTHORIZED, "Erro ao recuperar usuário pelo login!"),
+
+    // TURMA
+    NOME_TURMA_INVALIDO(HttpStatus.BAD_REQUEST, "Nome da turma deve ter entre 3 e 50 caracteres!"),
+    NOME_TURMA_EXISTE(HttpStatus.BAD_REQUEST, "Você já tem uma turma com esse nome!"),
+    TURMA_NAO_ENCONTRADA(HttpStatus.NOT_FOUND, "Não foi possivel localizar a turma desejada!"),
+    TURMA_EXCLUIDA(HttpStatus.BAD_REQUEST, "A turma já foi excluída!");
+
 
     final HttpStatus status;
     final String message;

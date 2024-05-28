@@ -113,6 +113,9 @@ public class UsuarioService {
                 throw new BusinessException(ErrorMessageCode.USUARIO_INATIVADO);
             } else {
                 usuario.setAtivado(Boolean.FALSE);
+                // Limpando os dados do usuário
+                usuario.setEmail(usuario.getId().toString());
+                usuario.setNome(usuario.getId().toString());
                 usuarioRepository.save(usuario);
             }
         } else throw new BusinessException(ErrorMessageCode.USUARIO_NAO_ENCONTRADO);
