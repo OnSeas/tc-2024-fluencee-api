@@ -14,7 +14,7 @@ public class UsuarioController {
     @Autowired
     private UsuarioService usuarioService;
 
-    @GetMapping
+    @GetMapping("/info")
     public ResponseEntity<UsuarioResponseDTO> getUsuario(){
         return ResponseEntity.ok(usuarioService.getUsuarioById());
     }
@@ -35,7 +35,7 @@ public class UsuarioController {
     }
 
     @PutMapping(path = "/desativar")
-    public ResponseEntity<UsuarioResponseDTO> desativar(){
-        return ResponseEntity.ok(usuarioService.desativar());
+    public ResponseEntity<UsuarioResponseDTO> desativar(@RequestBody UsuarioRequestDTO usuarioRequestDTO){
+        return ResponseEntity.ok(usuarioService.desativar(usuarioRequestDTO));
     }
 }

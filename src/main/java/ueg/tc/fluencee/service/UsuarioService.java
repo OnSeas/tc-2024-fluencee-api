@@ -105,13 +105,16 @@ public class UsuarioService {
         return mapper.map(usuarioBD, UsuarioResponseDTO.class);
     }
 
-    public UsuarioResponseDTO desativar(){
+    public UsuarioResponseDTO desativar(UsuarioRequestDTO usuarioRequestDTO){
         Usuario usuario = tokenService.getUsuarioLogado();
 
         if (usuario != null){
             if(usuario.getAtivado() == Boolean.FALSE){
                 throw new BusinessException(ErrorMessageCode.USUARIO_INATIVADO);
             } else {
+                validarEmail(usuarioRequestDTO.getEmail(), usuario);
+                validarSenha(usuarioRequestDTO.getSenha(), usuario);
+
                 usuario.setAtivado(Boolean.FALSE);
                 // Limpando os dados do usuário
                 usuario.setEmail(usuario.getId().toString());
@@ -121,5 +124,23 @@ public class UsuarioService {
         } else throw new BusinessException(ErrorMessageCode.USUARIO_NAO_ENCONTRADO);
 
         return mapper.map(usuario, UsuarioResponseDTO.class);
+    }
+
+    private Boolean validarEmail(String email, Usuario usuario){
+        if(!email.matches(usuario.getEmail())) {
+            throw new BusinessException(ErrorMessageCode.EMAIL_ERRADO);
+        }
+
+        return true;
+    }
+
+    private Boolean validarSenha(String senha, Usuario usuario){
+        BCryptPasswordEncoder bCryptPasswordEncoder = new BCryptPasswordEncoder();
+
+        if(!bCryptPasswordEncoder.matches(senha, usuario.getSenha())) {
+            throw new BusinessException(ErrorMessageCode.SENHA_INCORRETA);
+        }
+
+        return true;
     }
 }

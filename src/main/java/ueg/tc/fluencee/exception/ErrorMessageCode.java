@@ -19,8 +19,9 @@ public enum ErrorMessageCode {
     SENHA_LETRA_NUMERO(HttpStatus.BAD_REQUEST,"A senha deve ter no mínimo 1 letra e 1 número!"),
     USUARIO_INATIVADO(HttpStatus.BAD_REQUEST, "Este usuário foi excluído!"),
     USUARIO_NAO_ENCONTRADO(HttpStatus.NOT_FOUND, "Usuario não encontrado!"),
-    SENHA_ERRADA(HttpStatus.BAD_REQUEST,"A senha antiga não confere com sua senha."),
-    EMAIL_ERRADO(HttpStatus.BAD_REQUEST,"O email que você digitou não confere com o email da sua conta."),
+    SENHA_ERRADA(HttpStatus.BAD_REQUEST,"Senha antiga incorreta!"),
+    EMAIL_ERRADO(HttpStatus.BAD_REQUEST,"Email incorreto!"),
+    SENHA_INCORRETA(HttpStatus.BAD_REQUEST,"Senha incorreta!"),
 
 
     // LOGIN
