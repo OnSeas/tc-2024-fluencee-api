@@ -1,9 +1,11 @@
 package ueg.tc.fluencee.validations.usuario;
 
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Component;
 import ueg.tc.fluencee.dto.UsuarioRequestDTO;
 import ueg.tc.fluencee.exception.BusinessException;
 import ueg.tc.fluencee.exception.ErrorMessageCode;
+import ueg.tc.fluencee.model.Usuario;
 
 @Component
 public class ValidateSenhaUsuario implements ValidateUsuarioBeforeSave{
@@ -25,5 +27,15 @@ public class ValidateSenhaUsuario implements ValidateUsuarioBeforeSave{
         } else if (!senha.matches("^(?=.*[a-zA-Z])(?=.*\\d).*$")) {
             throw new BusinessException(ErrorMessageCode.SENHA_LETRA_NUMERO);
         }
+    }
+
+    public static Boolean validarSenha(String senha, Usuario usuario){
+        BCryptPasswordEncoder bCryptPasswordEncoder = new BCryptPasswordEncoder();
+
+        if(!bCryptPasswordEncoder.matches(senha, usuario.getSenha())) {
+            throw new BusinessException(ErrorMessageCode.SENHA_EMAIL_ERRADOS);
+        }
+
+        return true;
     }
 }

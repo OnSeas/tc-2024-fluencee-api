@@ -40,12 +40,14 @@ public class LoginController {
         ValidateEmailUsuario.validarEmail(loginDTO.getLogin());
         ValidateSenhaUsuario.validarSenha(loginDTO.getSenha());
         if (usuarioRepository.findByLogin(loginDTO.getLogin()) == null){
-            throw new BusinessException(ErrorMessageCode.EMAIL_NAO_ENCONTRADO);
+            throw new BusinessException(ErrorMessageCode.SENHA_EMAIL_ERRADOS);
         } else {
             if(!usuarioRepository.findByLogin(loginDTO.getLogin()).isEnabled()){
                 throw new BusinessException(ErrorMessageCode.USUARIO_INATIVADO);
             }
         }
+
+        ValidateSenhaUsuario.validarSenha(loginDTO.getSenha(), (Usuario) usuarioRepository.findByLogin(loginDTO.getLogin()));
 
         var usernamePassword = new UsernamePasswordAuthenticationToken(loginDTO.getLogin(), loginDTO.getSenha());
         var authentication = authenticationManager.authenticate(usernamePassword);

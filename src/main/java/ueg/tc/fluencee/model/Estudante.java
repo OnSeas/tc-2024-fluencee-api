@@ -26,14 +26,10 @@ public class Estudante {
     @Column(name = "c_bloqueado", nullable = false)
     private boolean bloqueado;
 
-    @Transient
-    private String nome;
+    @Column(name = "c_ativo", nullable = false)
+    private boolean ativo;
 
     public String getNome() {
         return estudante.getNome();
-    }
-
-    public void setNome() {
-        this.nome = estudante.getNome();
     }
 }

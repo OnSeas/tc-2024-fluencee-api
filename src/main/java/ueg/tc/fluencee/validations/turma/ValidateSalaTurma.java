@@ -20,7 +20,7 @@ public class ValidateSalaTurma implements IValidarTurmaBeforeSave{
 
     public static void validarSalaTurma(String sala) {
         if (sala != null) {
-            if (sala.length() < 3 || sala.length() > 40) {
+            if (!sala.isEmpty() && (sala.length() < 3 || sala.length() > 40)) {
                 throw new BusinessException(ErrorMessageCode.CAMPOS_ERRADOS);
             }
         }

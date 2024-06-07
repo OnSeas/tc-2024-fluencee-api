@@ -1,5 +1,6 @@
 package ueg.tc.fluencee.service;
 
+import org.aspectj.weaver.StandardAnnotation;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,20 +13,28 @@ import ueg.tc.fluencee.dto.UsuarioRequestDTO;
 import ueg.tc.fluencee.dto.UsuarioResponseDTO;
 import ueg.tc.fluencee.exception.BusinessException;
 import ueg.tc.fluencee.exception.ErrorMessageCode;
+import ueg.tc.fluencee.model.Estudante;
 import ueg.tc.fluencee.model.Turma;
 import ueg.tc.fluencee.model.Usuario;
+import ueg.tc.fluencee.repository.EstudanteRepository;
 import ueg.tc.fluencee.repository.TurmaRepository;
+import ueg.tc.fluencee.utils.Utils;
 import ueg.tc.fluencee.validations.turma.IValidarTurmaBeforeSave;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.Random;
+import java.util.stream.Collectors;
 
 @Service
 public class TurmaService {
 
     @Autowired
     private TurmaRepository turmaRepository;
+
+    @Autowired
+    private EstudanteRepository estudanteRepository;
 
     @Autowired
     private TokenService tokenService;
@@ -106,8 +115,50 @@ public class TurmaService {
         return mapper.map(turmaRepository.save(turmaBD), TurmaReponseDTO.class);
     }
 
-    public void entrarTurma(){
-        
+    public List<TurmaReponseDTO> listarTurmas(){
+        Usuario usuarioLogado = tokenService.getUsuarioLogado();
+
+        try{
+            List<Turma> turmasUsuario = new ArrayList<>(turmaRepository.getTurmasByUsuario(usuarioLogado.getId()));
+
+            return turmasUsuario
+                    .stream()
+                    .map(t -> mapper.map(t, TurmaReponseDTO.class))
+                    .collect(Collectors.toList());
+        } catch (Exception e){
+            e.printStackTrace();
+            throw new BusinessException(ErrorMessageCode.ERRO_GENERICO_BD);
+        }
+    }
+
+
+    public TurmaReponseDTO entrarTurma(String codigo){
+        Usuario usuario = tokenService.getUsuarioLogado();
+
+        Turma turma = turmaRepository.findByCodigo(codigo);
+        if (turma == null){
+            throw new BusinessException(ErrorMessageCode.TURMA_NAO_ENCONTRADA);
+        } else if (turma.getProfessor().getId().equals(usuario.getId())) {
+            throw new BusinessException(ErrorMessageCode.E_PROFESSOR_TURMA);
+        } else if (turmaRepository.isEstudanteBloqueado(usuario.getId(), turma.getId())) {
+            throw new BusinessException(ErrorMessageCode.ESTUDANTE_BLOQUEADO);
+        }
+
+        Estudante estudante;
+
+        if(turmaRepository.estudanteExists(usuario.getId(), turma.getId())) {
+            estudante = estudanteRepository.getEstudanteByTurmaAndEstudante(turma, usuario);
+            estudante.setAtivo(Boolean.TRUE);
+        } else {
+            estudante = new Estudante();
+            estudante.setTurma(turma);
+            estudante.setEstudante(usuario);
+            estudante.setAtivo(Boolean.TRUE);
+            estudante.setBloqueado(Boolean.FALSE);
+        }
+
+        estudanteRepository.save(estudante);
+        return mapper.map(estudante.getTurma(), TurmaReponseDTO.class);
     }
 
 

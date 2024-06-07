@@ -4,6 +4,8 @@ import jakarta.persistence.*;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.List;
+
 @NoArgsConstructor
 @Entity
 @Data
@@ -38,4 +40,8 @@ public class Turma {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "c_professor_id", nullable = false)
     private Usuario professor;
+
+    @OneToMany(fetch = FetchType.LAZY)
+    @JoinColumn(name = "id_estudante", nullable = true)
+    private List<Estudante> estudantes;
 }

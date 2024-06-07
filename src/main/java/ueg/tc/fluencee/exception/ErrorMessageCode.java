@@ -6,9 +6,11 @@ import org.springframework.http.HttpStatus;
 @Getter
 public enum ErrorMessageCode {
 
+    ERRO_GENERICO_BD(HttpStatus.BAD_REQUEST, "Erro na conexão com o banco de dados."),
+
     CAMPO_OBRIGATORIO_VAZIO(HttpStatus.BAD_REQUEST, "É necessário preencher todos os campos obrigatórios!"),
     CAMPOS_ERRADOS(HttpStatus.BAD_REQUEST,"Campos não preenchidos corretamente, por favor confira suas informações!"),
-    PERMISSAO_NEGADA(HttpStatus.UNAUTHORIZED, "VocÊ não tem permissão para realizar essa ação!"),
+    PERMISSAO_NEGADA(HttpStatus.UNAUTHORIZED, "Você não tem permissão para realizar essa ação!"),
 
     // CADASTRO DE USUÁRIO
     USUARIO_NOME_INVALIDO(HttpStatus.BAD_REQUEST, "Nome deve ter entre 3 e 200 caracteres!"),
@@ -25,17 +27,19 @@ public enum ErrorMessageCode {
 
 
     // LOGIN
-    EMAIL_NAO_ENCONTRADO(HttpStatus.BAD_REQUEST, "O email não foi encontrado. Tente criar uma conta se você ainda não tem uma!"),
     ERRO_GERAR_TOKEN(HttpStatus.UNAUTHORIZED, "Erro ao gerar token para login!"),
     ERRO_VALIDAR_TOKEN(HttpStatus.UNAUTHORIZED, "Erro ao validar token para login!"),
     ERRO_RECUPERAR_USUARIO_LOGIN(HttpStatus.UNAUTHORIZED, "Erro ao recuperar usuário pelo login!"),
+    SENHA_EMAIL_ERRADOS(HttpStatus.UNAUTHORIZED, "Usuário não existe ou senha incorreta!"),
+    EMAIL_NAO_ENCONTRADO(HttpStatus.NOT_FOUND, "Não existe uma conta associada a este email!"),
 
     // TURMA
     NOME_TURMA_INVALIDO(HttpStatus.BAD_REQUEST, "Nome da turma deve ter entre 3 e 50 caracteres!"),
     NOME_TURMA_EXISTE(HttpStatus.BAD_REQUEST, "Você já tem uma turma com esse nome!"),
-    TURMA_NAO_ENCONTRADA(HttpStatus.NOT_FOUND, "Não foi possivel localizar a turma desejada!"),
-    TURMA_EXCLUIDA(HttpStatus.BAD_REQUEST, "A turma já foi excluída!");
-
+    TURMA_NAO_ENCONTRADA(HttpStatus.NOT_FOUND, "Turma referente ao código não encontrada"),
+    TURMA_EXCLUIDA(HttpStatus.BAD_REQUEST, "A turma já foi excluída!"),
+    E_PROFESSOR_TURMA(HttpStatus.BAD_REQUEST, "Você não pode entrar em uma turma que você é professor!"),
+    ESTUDANTE_BLOQUEADO(HttpStatus.BAD_REQUEST, "Você foi bloqueado e não pode mais entrar nesta turma!");
 
     final HttpStatus status;
     final String message;

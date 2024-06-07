@@ -5,6 +5,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import ueg.tc.fluencee.dto.TurmaReponseDTO;
 import ueg.tc.fluencee.dto.TurmaRequestDTO;
+import ueg.tc.fluencee.model.Estudante;
 import ueg.tc.fluencee.service.TurmaService;
 
 import java.util.List;
@@ -16,7 +17,7 @@ public class TurmaController {
     @Autowired
     private TurmaService turmaService;
 
-    @PostMapping
+    @PostMapping("/criar")
     public ResponseEntity<TurmaReponseDTO> criarTurma(@RequestBody TurmaRequestDTO turmaRequestDTO) {
         return ResponseEntity.ok(turmaService.criarTurma(turmaRequestDTO));
     }
@@ -31,8 +32,13 @@ public class TurmaController {
         return ResponseEntity.ok(turmaService.excluirTurma(idTurma));
     }
 
-//    @PutMapping("/listar")
-//    public ResponseEntity<List<TurmaReponseDTO>> listarTurmasUsuario(){
-//
-//    }
+    @GetMapping("/listar")
+    public ResponseEntity<List<TurmaReponseDTO>> listarTurmasUsuario(){
+        return ResponseEntity.ok(turmaService.listarTurmas());
+    }
+
+    @PostMapping("/entrarTurma")
+    public ResponseEntity<TurmaReponseDTO> entrarTurma(@RequestBody String codigo) {
+        return ResponseEntity.ok(turmaService.entrarTurma(codigo));
+    }
 }

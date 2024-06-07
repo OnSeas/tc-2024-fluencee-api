@@ -19,7 +19,7 @@ public class ValidateAnoTurma implements IValidarTurmaBeforeSave{
 
     public static void validarAnoTurma(String ano) {
         if (ano != null) {
-            if (ano.length() < 3 || ano.length() > 40) {
+            if (!ano.isEmpty() && (ano.length() < 3 || ano.length() > 40)) {
                 throw new BusinessException(ErrorMessageCode.CAMPOS_ERRADOS);
             }
         }
