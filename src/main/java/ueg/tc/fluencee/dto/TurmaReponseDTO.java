@@ -11,4 +11,5 @@ public class TurmaReponseDTO {
     private String codigo;
     private boolean ativado;
     private boolean eProfessor;
+    private String professorNome;
 }

@@ -111,7 +111,10 @@ public class TurmaService {
         }
 
         turmaBD.setAtivado(Boolean.FALSE);
-        turmaBD.setNome(turmaBD.getNome().concat(turmaBD.getId().toString()));
+        turmaBD.setCodigo(turmaBD.getId().toString());
+        turmaBD.setNome(turmaBD.getId().toString());
+        turmaBD.setAno(turmaBD.getId().toString());
+        turmaBD.setSala(turmaBD.getId().toString());
         return mapper.map(turmaRepository.save(turmaBD), TurmaReponseDTO.class);
     }
 
@@ -120,6 +123,12 @@ public class TurmaService {
 
         try{
             List<Turma> turmasUsuario = new ArrayList<>(turmaRepository.getTurmasByUsuario(usuarioLogado.getId()));
+
+            turmasUsuario.forEach(turma -> {
+                if (turma.getProfessor().getId().equals(usuarioLogado.getId())){
+                    turma.setEProfessor(Boolean.TRUE);
+                } else turma.setEProfessor(Boolean.FALSE);
+            });
 
             return turmasUsuario
                     .stream()
@@ -131,6 +140,22 @@ public class TurmaService {
         }
     }
 
+    public TurmaReponseDTO buscarTurma(Long id) {
+        Usuario usuarioLogado = tokenService.getUsuarioLogado();
+
+        try{
+            Turma turmaBD = turmaRepository.getById(id);
+
+            if (turmaBD.getProfessor().getId().equals(usuarioLogado.getId())){
+                turmaBD.setEProfessor(Boolean.TRUE);
+            } else turmaBD.setEProfessor(Boolean.FALSE);
+
+            return mapper.map(turmaBD, TurmaReponseDTO.class);
+        } catch (Exception e){
+            e.printStackTrace();
+            throw new BusinessException(ErrorMessageCode.ERRO_GENERICO_BD);
+        }
+    }
 
     public TurmaReponseDTO entrarTurma(String codigo){
         Usuario usuario = tokenService.getUsuarioLogado();

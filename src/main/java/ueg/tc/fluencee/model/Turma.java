@@ -44,4 +44,7 @@ public class Turma {
     @OneToMany(fetch = FetchType.LAZY)
     @JoinColumn(name = "id_estudante", nullable = true)
     private List<Estudante> estudantes;
+
+    @Transient
+    private Boolean eProfessor;
 }

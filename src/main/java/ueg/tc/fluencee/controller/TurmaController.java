@@ -22,7 +22,7 @@ public class TurmaController {
         return ResponseEntity.ok(turmaService.criarTurma(turmaRequestDTO));
     }
 
-    @PutMapping("{idTurma}")
+    @PutMapping("/editar/{idTurma}")
     public ResponseEntity<TurmaReponseDTO> alterarTurma(@RequestBody TurmaRequestDTO turmaRequestDTO, @PathVariable Long idTurma) {
         return ResponseEntity.ok(turmaService.alterarTurma(turmaRequestDTO, idTurma));
     }
@@ -35,6 +35,11 @@ public class TurmaController {
     @GetMapping("/listar")
     public ResponseEntity<List<TurmaReponseDTO>> listarTurmasUsuario(){
         return ResponseEntity.ok(turmaService.listarTurmas());
+    }
+
+    @GetMapping("/buscar/{id}")
+    public ResponseEntity<TurmaReponseDTO> buscarTurma(@PathVariable Long id){
+        return ResponseEntity.ok(turmaService.buscarTurma(id));
     }
 
     @PostMapping("/entrarTurma")
