@@ -3,8 +3,10 @@ package ueg.tc.fluencee.model;
 import jakarta.persistence.*;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import ueg.tc.fluencee.utils.Utils;
 
 import java.util.List;
+import java.util.Objects;
 
 @NoArgsConstructor
 @Entity
@@ -47,4 +49,12 @@ public class Turma {
 
     @Transient
     private Boolean eProfessor;
+
+    public Boolean geteProfessor() {
+        Usuario usuarioLogado = Utils.getUsuarioLogado();
+
+        return Objects.equals(usuarioLogado.getId(), this.professor.getId());
+    }
+
+
 }

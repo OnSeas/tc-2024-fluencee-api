@@ -3,6 +3,7 @@ package ueg.tc.fluencee.controller;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import ueg.tc.fluencee.dto.EstudanteResponseDTO;
 import ueg.tc.fluencee.dto.TurmaReponseDTO;
 import ueg.tc.fluencee.dto.TurmaRequestDTO;
 import ueg.tc.fluencee.model.Estudante;
@@ -45,5 +46,15 @@ public class TurmaController {
     @PostMapping("/entrarTurma")
     public ResponseEntity<TurmaReponseDTO> entrarTurma(@RequestBody String codigo) {
         return ResponseEntity.ok(turmaService.entrarTurma(codigo));
+    }
+
+    @GetMapping("/listarEstudantes/{idTurma}")
+    public ResponseEntity<List<EstudanteResponseDTO>> listarEstudantes(@PathVariable Long idTurma){
+        return ResponseEntity.ok(turmaService.listarEstudantes(idTurma));
+    }
+
+    @PutMapping("/removerEstudante")
+    public ResponseEntity<EstudanteResponseDTO> removerEstudante(@RequestBody Estudante estudante){
+        return ResponseEntity.ok(turmaService.removerEstudante(estudante));
     }
 }

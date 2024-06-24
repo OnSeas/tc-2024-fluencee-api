@@ -39,7 +39,20 @@ public enum ErrorMessageCode {
     TURMA_NAO_ENCONTRADA(HttpStatus.NOT_FOUND, "Turma referente ao código não encontrada"),
     TURMA_EXCLUIDA(HttpStatus.BAD_REQUEST, "A turma já foi excluída!"),
     E_PROFESSOR_TURMA(HttpStatus.BAD_REQUEST, "Você não pode entrar em uma turma que você é professor!"),
-    ESTUDANTE_BLOQUEADO(HttpStatus.BAD_REQUEST, "Você foi bloqueado e não pode mais entrar nesta turma!");
+    ESTUDANTE_BLOQUEADO(HttpStatus.BAD_REQUEST, "Você foi bloqueado e não pode mais entrar nesta turma!"),
+
+    // ATIVIDADE
+    NOME_ATIVIDADE_EXISTE(HttpStatus.BAD_REQUEST, "Você já tem uma atividade com este nome na turma!"),
+
+    // QUESTÕES
+    NOME_QUESTAO_EXISTE(HttpStatus.BAD_REQUEST, "Você já possui uma questão com esse nome"),
+    NOTA_QUESTAO_MAIOR(HttpStatus.BAD_REQUEST, "Nota da questão maior que a dísponivel nesta atividade."),
+    QUANTIDADE_OPCOES_INVALIDAS(HttpStatus.BAD_REQUEST, "É necessário adicionar de 3 a 5 questões"),
+    OPCAO_CORRETA_INVALIDA(HttpStatus.BAD_REQUEST, "É necessário que haja uma (e apenas uma) opção correta!"),
+    EXCLUIR_QUESTAO(HttpStatus.BAD_REQUEST, "Erro ao excluir questão, tente novamente mais tarde!"),
+
+    NOTA_DIFERENTE(HttpStatus.BAD_REQUEST, "As questões da atividade ainda não preenchem toda a nota"),
+    INICIAR_ATIVIDADE_GRUPOS(HttpStatus.BAD_REQUEST, "Não foi possivel iniciar a atividade!");
 
     final HttpStatus status;
     final String message;

@@ -5,6 +5,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 import ueg.tc.fluencee.model.Turma;
+import ueg.tc.fluencee.model.Usuario;
 
 import java.util.List;
 
@@ -14,10 +15,10 @@ public interface TurmaRepository extends JpaRepository<Turma, Long> {
 
     Turma findByCodigo(String codigo);
 
-    boolean existsByNome(String nome);
+    boolean existsByNomeAndProfessor(String nome, Usuario professor);
 
-    @Query("SELECT CASE WHEN COUNT(turma) > 0 THEN true ELSE false END FROM Turma turma WHERE turma.nome LIKE :nome AND turma.id <> :id")
-    boolean existsByNomeDiferent(@Param("nome") String nome, @Param("id") Long id);
+    @Query("SELECT CASE WHEN COUNT(turma) > 0 THEN true ELSE false END FROM Turma turma WHERE turma.nome LIKE :nome AND turma.id <> :id AND turma.professor.id = :idProf")
+    boolean existsByNomeDiferent(@Param("nome") String nome, @Param("id") Long id, @Param("idProf") Long idProf);
 
 
     @Query("SELECT DISTINCT turma FROM Turma turma " +

@@ -1,5 +1,6 @@
 package ueg.tc.fluencee.service;
 
+import jakarta.transaction.Transactional;
 import org.aspectj.weaver.StandardAnnotation;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.BeanUtils;
@@ -7,10 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import ueg.tc.fluencee.configuration.security.TokenService;
-import ueg.tc.fluencee.dto.TurmaReponseDTO;
-import ueg.tc.fluencee.dto.TurmaRequestDTO;
-import ueg.tc.fluencee.dto.UsuarioRequestDTO;
-import ueg.tc.fluencee.dto.UsuarioResponseDTO;
+import ueg.tc.fluencee.dto.*;
 import ueg.tc.fluencee.exception.BusinessException;
 import ueg.tc.fluencee.exception.ErrorMessageCode;
 import ueg.tc.fluencee.model.Estudante;
@@ -186,13 +184,46 @@ public class TurmaService {
         return mapper.map(estudante.getTurma(), TurmaReponseDTO.class);
     }
 
+    public List<EstudanteResponseDTO> listarEstudantes(Long idTurma) {
+        try {
+            Turma turma = turmaRepository.getById(idTurma);
+            return estudanteRepository.findByTurmaAndAtivo(turma, true)
+                    .stream()
+                    .map(estudante -> mapper.map(estudante, EstudanteResponseDTO.class))
+                    .collect(Collectors.toList());
+        } catch (Exception e){
+            e.printStackTrace();
+            throw new BusinessException(ErrorMessageCode.ERRO_GENERICO_BD);
+        }
+    }
+
+    public List<Estudante> listarEstudantesModel(Long idTurma) {
+        try {
+            Turma turma = turmaRepository.getById(idTurma);
+            return estudanteRepository.findByTurmaAndAtivo(turma, true);
+        } catch (Exception e){
+            e.printStackTrace();
+            throw new BusinessException(ErrorMessageCode.ERRO_GENERICO_BD);
+        }
+    }
+
+    @Transactional
+    public EstudanteResponseDTO removerEstudante(Estudante estudante){
+        Estudante estudanteBD = estudanteRepository.getById(estudante.getId());
+        estudanteBD.setAtivo(false);
+
+        estudanteBD.setBloqueado(estudante.isBloqueado()); // Bloquear ou não
+
+        return mapper.map(estudanteRepository.save(estudanteBD), EstudanteResponseDTO.class);
+    }
+
 
     // Funções internas
     private String gerarCodigoTurma(){
         String caracteresPermitidos = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
         Random random = new Random();
 
-        StringBuilder codigoBuilder = new StringBuilder(15);
+        StringBuilder codigoBuilder = new StringBuilder(8);
 
         for (int i = 0; i < 15; i++) {
             int posicaoAleatoria = random.nextInt(caracteresPermitidos.length());

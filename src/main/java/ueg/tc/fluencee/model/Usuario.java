@@ -20,15 +20,12 @@ public class Usuario implements UserDetails {
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "usuario_sequence")
     private Long id;
 
-    // NOME do usuário
     @Column(name = "c_nome", length = 200, nullable = false)
     private String nome;
 
-    // EMAIL do usuário
     @Column(name = "c_email", length = 256, nullable = false, unique = true)
     private String email;
 
-    // SENHA do usuário
     @Column(name = "c_senha", length = 256, nullable = false)
     private String senha;
 

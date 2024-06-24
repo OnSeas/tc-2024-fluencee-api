@@ -1,5 +1,6 @@
 package ueg.tc.fluencee.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -28,6 +29,16 @@ public class Estudante {
 
     @Column(name = "c_ativo", nullable = false)
     private boolean ativo;
+
+    @Transient
+    private Double nota;
+
+    @Transient
+    private String nome;
+
+    public Double getNota() {
+        return 0.0; // TODO retornar a nota aqui
+    }
 
     public String getNome() {
         return estudante.getNome();
