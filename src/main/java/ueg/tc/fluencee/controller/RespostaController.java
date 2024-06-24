@@ -3,8 +3,11 @@ package ueg.tc.fluencee.controller;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import ueg.tc.fluencee.dto.EstudanteGrupoDTO;
 import ueg.tc.fluencee.model.Resposta;
 import ueg.tc.fluencee.service.RespostaService;
+
+import java.util.List;
 
 @RestController
 @RequestMapping(path = "fluencee/resposta")
@@ -19,4 +22,10 @@ public class RespostaController {
         return ResponseEntity.ok("Resposta cadastrada");
     }
 
+    @GetMapping("/listarRespostas{idAtividade}")
+    public ResponseEntity<List<EstudanteGrupoDTO>> listarRespostas(@PathVariable Long idAtividade) {
+        List<EstudanteGrupoDTO> estudanteGrupoDTOS = respostaService.listarRespostas(idAtividade);
+        System.out.println(estudanteGrupoDTOS);
+        return ResponseEntity.ok(estudanteGrupoDTOS);
+    }
 }
