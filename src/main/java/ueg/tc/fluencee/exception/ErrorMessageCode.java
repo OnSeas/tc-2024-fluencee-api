@@ -52,7 +52,9 @@ public enum ErrorMessageCode {
     EXCLUIR_QUESTAO(HttpStatus.BAD_REQUEST, "Erro ao excluir questão, tente novamente mais tarde!"),
 
     NOTA_DIFERENTE(HttpStatus.BAD_REQUEST, "As questões da atividade ainda não preenchem toda a nota"),
-    INICIAR_ATIVIDADE_GRUPOS(HttpStatus.BAD_REQUEST, "Não foi possivel iniciar a atividade!");
+    INICIAR_ATIVIDADE_GRUPOS(HttpStatus.BAD_REQUEST, "Não foi possivel iniciar a atividade!"),
+
+    NOTA_MAIOR_QUESTAO(HttpStatus.BAD_REQUEST, "A nota é maior que a dísponivel nesta questão!");
 
     final HttpStatus status;
     final String message;

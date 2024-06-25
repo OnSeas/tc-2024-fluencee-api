@@ -28,4 +28,9 @@ public class RespostaController {
         System.out.println(estudanteGrupoDTOS);
         return ResponseEntity.ok(estudanteGrupoDTOS);
     }
+
+    @PutMapping("/corrigir/{idResposta}")
+    public ResponseEntity<String> corrigirQuestao(@PathVariable Long idResposta, @RequestBody Resposta resposta) {
+        return ResponseEntity.ok(respostaService.corrigir(idResposta, resposta));
+    }
 }

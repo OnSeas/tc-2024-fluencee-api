@@ -9,10 +9,7 @@ import ueg.tc.fluencee.dto.UsuarioResponseDTO;
 import ueg.tc.fluencee.exception.BusinessException;
 import ueg.tc.fluencee.exception.ErrorMessageCode;
 import ueg.tc.fluencee.model.*;
-import ueg.tc.fluencee.repository.AtividadeRepository;
-import ueg.tc.fluencee.repository.EstudanteGrupoRepository;
-import ueg.tc.fluencee.repository.QuestaoRepository;
-import ueg.tc.fluencee.repository.RespostaRepository;
+import ueg.tc.fluencee.repository.*;
 import ueg.tc.fluencee.utils.Utils;
 
 import java.util.ArrayList;
@@ -33,6 +30,9 @@ public class RespostaService {
 
     @Autowired
     EstudanteGrupoRepository estudanteGrupoRepository;
+
+    @Autowired
+    QuestaoAtividadeRepository questaoAtividadeRepository;
 
     private final ModelMapper mapper = new ModelMapper();
 
@@ -73,6 +73,8 @@ public class RespostaService {
                 }
 
                 RespostaDTO respostaDTO = mapper.map(resposta, RespostaDTO.class);
+                respostaDTO.setNomeQuestao(resposta.getOpcao().getQuestao().getNome());
+                respostaDTO.setEnunciadoQuestao(resposta.getOpcao().getQuestao().getEnunciado());
                 estudanteGrupoDTO.getRespostas().add(respostaDTO);
             }
         }
@@ -80,4 +82,22 @@ public class RespostaService {
         return new ArrayList<>(estudanteGrupoMap.values());
     }
 
+    public String corrigir(Long idResposta, Resposta resposta) {
+        Resposta respostaBD = respostaRepository.getById(idResposta);
+
+        QuestaoAtividade questaoAtividade = questaoAtividadeRepository.findByAtividadeAndQuestao(
+                respostaBD.getEstudanteGrupo().getGrupo().getAtividade(),
+                respostaBD.getOpcao().getQuestao()
+        );
+
+        if (resposta.getNota() > questaoAtividade.getNota()){
+            throw new BusinessException(ErrorMessageCode.NOTA_QUESTAO_MAIOR);
+        }
+
+        respostaBD.setNota(resposta.getNota());
+        if(resposta.getComentario() != null && !resposta.getComentario().isBlank()) respostaBD.setComentario(resposta.getComentario());
+
+        respostaRepository.save(respostaBD);
+        return "sucesso!!!";
+    }
 }
